@@ -6,6 +6,6 @@ import com.project.astranomapp.presentation.menu_feature.screen.MenuScreen
 
 object AcceptIntent {
     fun execute(){
-        StaticDate.navigator.push(CreateUserCardScreen)
+        StaticDate.navigator.push(MenuScreen)
     }
 }

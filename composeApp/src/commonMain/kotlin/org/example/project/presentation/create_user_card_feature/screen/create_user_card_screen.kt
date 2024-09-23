@@ -58,10 +58,10 @@ object CreateUserCardScreen:Screen{
     val vm = ViewModelCreateUserCard(StaticDate)
     @Composable
     override fun Content(){
-        var name by remember { mutableStateOf("") }
-        var age by remember { mutableStateOf("") }
-        var placeOfResidents by remember { mutableStateOf("") }
-        var observationExperience by remember { mutableStateOf("") }
+        var name by remember { mutableStateOf("Name") }
+        var age by remember { mutableStateOf("18") }
+        var placeOfResidents by remember { mutableStateOf("Alberta(Canada)") }
+        var observationExperience by remember { mutableStateOf("0") }
 
         val isVisible by remember { mutableStateOf(Animatable(0f)) }
 
