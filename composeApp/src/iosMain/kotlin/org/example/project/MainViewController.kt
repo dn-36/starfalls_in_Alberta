@@ -10,6 +10,8 @@ fun MainViewController() = ComposeUIViewController {
     ServiceLocator.photoSender = IosPhotoSender()
     ServiceLocator.key = KeyValueStorageImpl()
     ServiceLocator.webView = WebSettingsManager()
+    ServiceLocator.contacts = IOSContactProvider()
+    ServiceLocator.files = IOSFileProvider(viewController)
 
     App()
 }

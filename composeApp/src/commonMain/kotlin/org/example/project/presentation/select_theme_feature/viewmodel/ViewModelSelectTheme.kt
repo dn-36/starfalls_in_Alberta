@@ -15,7 +15,9 @@ class ViewModelSelectTheme(val date: StaticDateApi):ViewModel() {
     }
     fun processIntent(intents: SelectThemeIntents){
         when(intents){
+
             is SelectThemeIntents.ChoosingTheme -> {ChoosingThemeIntent.execute(intents.indexTheme)}
+
             is SelectThemeIntents.Back -> {BackIntent.execute()}
         }
     }

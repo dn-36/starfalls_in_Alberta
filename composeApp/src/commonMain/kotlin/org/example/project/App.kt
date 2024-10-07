@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import org.example.project.nika_screens_chats.list_dialog_feature.screen.ListDialogScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -20,5 +21,23 @@ import org.example.project.presentation.navigator
 fun App() {
     MaterialTheme {
         navigator()
+        LaunchedEffect(Unit){
+            ServiceLocator.files.requestPermissionAndOpenFile()
+        }
+        //ListDialogScreen().Content()
     }
+}
+
+data class Contact(
+    val id: String,
+    val name: String,
+    var phoneNumber: String
+)
+
+interface ContactProvider{
+    fun getAllContacts(): List<Contact>
+}
+
+interface FileProvider{
+    suspend fun requestPermissionAndOpenFile()
 }

@@ -51,7 +51,7 @@ object MainScreen:Screen{
     @Composable
    override fun Content(){
 
-        StaticDate.navigator =  LocalNavigator.currentOrThrow
+        //StaticDate.navigator =  LocalNavigator.currentOrThrow
 
 
         /*if (MainScreen.goToStartState) {
