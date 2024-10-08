@@ -6,7 +6,7 @@ import platform.UIKit.UIViewController
 import platform.Foundation.NSArray
 import platform.UIKit.*
 
-class IOSFileProvider(private val viewController: UIViewController):FileProvider {
+/*class IOSFileProvider(private val viewController: UIViewController):FileProvider {
 
     override suspend fun requestPermissionAndOpenFile() {
         // В iOS не требуется запрашивать разрешение на доступ к документам
@@ -26,4 +26,4 @@ class IOSFileProvider(private val viewController: UIViewController):FileProvider
         // Отображаем контроллер для выбора файлов
         viewController.presentViewController(documentPicker, animated = true, completion = null)
     }
-}
+}*/

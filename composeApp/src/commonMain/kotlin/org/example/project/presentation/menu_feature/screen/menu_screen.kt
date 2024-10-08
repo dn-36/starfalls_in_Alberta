@@ -23,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.project.astranomapp.data.StaticDate
 import com.project.astranomapp.presentation.menu_feature.viewmodel.MeniIntents
 import com.project.astranomapp.presentation.menu_feature.viewmodel.MenuViewModel
@@ -41,7 +43,6 @@ object MenuScreen:Screen{
     val vm = MenuViewModel(StaticDate)
     @Composable
     override fun Content(){
-
         vm.processIntent(MeniIntents.SetScreen)
 
     Box(modifier = Modifier.fillMaxSize()){

@@ -20,28 +20,37 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.core.screen.Screen
+import com.preat.peekaboo.image.picker.SelectionMode
+import com.preat.peekaboo.image.picker.rememberImagePickerLauncher
+import com.preat.peekaboo.image.picker.toImageBitmap
 import org.example.project.ServiceLocator
 import org.example.project.nika_screens_chats.dialog_feature.model.componentMessageNeighbor
 import org.example.project.nika_screens_chats.dialog_feature.model.componentMyMessage
@@ -53,6 +62,7 @@ import starfallsinalberta.composeapp.generated.resources.add_photo
 import starfallsinalberta.composeapp.generated.resources.back
 import starfallsinalberta.composeapp.generated.resources.back_
 import starfallsinalberta.composeapp.generated.resources.back_button
+import starfallsinalberta.composeapp.generated.resources.cancel
 import starfallsinalberta.composeapp.generated.resources.dots
 import starfallsinalberta.composeapp.generated.resources.paperclip
 import starfallsinalberta.composeapp.generated.resources.smile
@@ -67,7 +77,21 @@ class DialogScreen : Screen {
     @Composable
     override fun Content() {
 
-        var text by remember { mutableStateOf("") }
+        //
+        val scope = rememberCoroutineScope()
+
+        val images = remember { mutableStateListOf<ImageBitmap>() }
+
+        val multipleImagePicker = rememberImagePickerLauncher(
+            scope = scope,
+            selectionMode = SelectionMode.Multiple(),
+            onResult = { byteArrays ->
+                images += byteArrays.map {
+                    it.toImageBitmap()
+                }
+            }
+        )
+        //
 
         Box(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
 
@@ -136,63 +160,93 @@ class DialogScreen : Screen {
                     }
                 }
             }
-
-            Row(
-                modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.ime),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .background(Color.LightGray), contentAlignment = Alignment.Center
+            Column(modifier = Modifier.align(Alignment.BottomCenter)) {
+                if (images.size != 0) {
+                    LazyRow(modifier = Modifier.fillMaxWidth()) {
+                        items(images) { item ->
+                            Box(modifier = Modifier.size(95.dp)) {
+                                Image(
+                                    modifier = Modifier.padding(10.dp)
+                                        .size(90.dp),
+                                    bitmap = item,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop
+                                )
+                                Image(painterResource(Res.drawable.cancel),contentDescription = null,
+                                    modifier = Modifier.size(10.dp).align(Alignment.TopEnd).clickable(
+                                        indication = null, // Отключение эффекта затемнения
+                                        interactionSource = remember { MutableInteractionSource() })
+                                    { images.remove(item)})
+                            }
+                        }
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Bottom
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                            .background(Color.LightGray), contentAlignment = Alignment.Center
                     ) {
-                       /* Image(
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+                            /* Image(
                             painter = painterResource(Res.drawable.smile),
                             contentDescription = null,
                             modifier = Modifier.padding(bottom = 15.dp,top = 8.dp).size(25.dp)
                         )*/
 
-                        BasicTextField(
-                            value = text,
-                            onValueChange = { text = it },
-                            modifier = Modifier
-                                .fillMaxWidth(0.65f).heightIn(min = 33.dp, max = 150.dp),
-                            textStyle = TextStyle(fontSize = 18.sp),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                        )
+                            BasicTextField(
+                                value = vm.dialogState.text,
+                                onValueChange = {
+                                    vm.dialogState = vm.dialogState.copy(
+                                        text = it
+                                    )
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth(0.65f).heightIn(min = 33.dp, max = 150.dp),
+                                textStyle = TextStyle(fontSize = 18.sp),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                            )
 
-                        Image(
-                            painter = painterResource(Res.drawable.add_photo),
-                            contentDescription = null,
-                            modifier = Modifier.padding(bottom = 15.dp,top = 8.dp).size(22.dp)
-                        )
+                            Image(
+                                painter = painterResource(Res.drawable.add_photo),
+                                contentDescription = null,
+                                modifier = Modifier.padding(bottom = 15.dp, top = 8.dp).size(22.dp)
+                                    .clickable(
+                                        indication = null, // Отключение эффекта затемнения
+                                        interactionSource = remember { MutableInteractionSource() })
+                                    { multipleImagePicker.launch() }
+                            )
 
-                        Spacer(modifier = Modifier.width(7.dp))
+                            Spacer(modifier = Modifier.width(7.dp))
 
-                        Image(
-                            painter = painterResource(Res.drawable.paperclip),
-                            contentDescription = null,
-                            modifier = Modifier.padding(bottom = 15.dp,top = 8.dp).size(22.dp).clickable(
-                                indication = null, // Отключение эффекта затемнения
-                                interactionSource = remember { MutableInteractionSource() })
-                            {  }
-                        )
-                        Spacer(modifier = Modifier.width(7.dp))
-                        Image(
-                            painter = painterResource(Res.drawable.back_),
-                            contentDescription = null,
-                            modifier = Modifier.padding(bottom = 15.dp,top = 8.dp).size(25.dp)
-                                .graphicsLayer(rotationZ = 180f)
-                        )
+                            Image(
+                                painter = painterResource(Res.drawable.paperclip),
+                                contentDescription = null,
+                                modifier = Modifier.padding(bottom = 15.dp, top = 8.dp).size(22.dp)
+                                    .clickable(
+                                        indication = null, // Отключение эффекта затемнения
+                                        interactionSource = remember { MutableInteractionSource() })
+                                    { }
+                            )
+                            Spacer(modifier = Modifier.width(7.dp))
+                            Image(
+                                painter = painterResource(Res.drawable.back_),
+                                contentDescription = null,
+                                modifier = Modifier.padding(bottom = 15.dp, top = 8.dp).size(25.dp)
+                                    .graphicsLayer(rotationZ = 180f)
+                            )
+                        }
                     }
                 }
             }
         }
     }
 }
+

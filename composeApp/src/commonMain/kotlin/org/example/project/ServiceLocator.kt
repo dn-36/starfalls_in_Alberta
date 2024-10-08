@@ -9,5 +9,5 @@ object ServiceLocator {
     lateinit var key: KeyValueStorage
     lateinit var webView: WebViewProvider
     lateinit var contacts: ContactProvider
-    lateinit var files: FileProvider
+    //lateinit var files: FileProvider
 }

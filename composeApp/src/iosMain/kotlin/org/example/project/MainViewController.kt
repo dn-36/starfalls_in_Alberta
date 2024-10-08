@@ -7,11 +7,11 @@ import com.project.astranomapp.data.StaticDate
 fun MainViewController() = ComposeUIViewController {
 
     val viewController = LocalUIViewController.current
-    ServiceLocator.photoSender = IosPhotoSender()
+    //ServiceLocator.photoSender = IosPhotoSender()
     ServiceLocator.key = KeyValueStorageImpl()
     ServiceLocator.webView = WebSettingsManager()
     ServiceLocator.contacts = IOSContactProvider()
-    ServiceLocator.files = IOSFileProvider(viewController)
+    //ServiceLocator.files = IOSFileProvider(viewController)
 
     App()
 }

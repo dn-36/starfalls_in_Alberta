@@ -47,5 +47,5 @@ import org.example.project.presentation.add_starfall_feature.screen.AddStarfallS
 
 @Composable
 public fun AmdImagePickerContent() {
- AddStarfallScreen.Content()
+// AddStarfallScreen.Content()
 }

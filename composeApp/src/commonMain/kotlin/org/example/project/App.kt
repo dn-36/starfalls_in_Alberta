@@ -21,10 +21,6 @@ import org.example.project.presentation.navigator
 fun App() {
     MaterialTheme {
         navigator()
-        LaunchedEffect(Unit){
-            ServiceLocator.files.requestPermissionAndOpenFile()
-        }
-        //ListDialogScreen().Content()
     }
 }
 
@@ -38,6 +34,3 @@ interface ContactProvider{
     fun getAllContacts(): List<Contact>
 }
 
-interface FileProvider{
-    suspend fun requestPermissionAndOpenFile()
-}
